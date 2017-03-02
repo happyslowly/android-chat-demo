@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Chat PP</string>
+    <string name="send_button">Send</string>
+    <string name="typing">Agent is typing...</string>
+</resources>
