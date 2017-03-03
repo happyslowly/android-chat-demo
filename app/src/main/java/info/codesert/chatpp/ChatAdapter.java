@@ -2,17 +2,15 @@ package info.codesert.chatpp;
 
 import android.app.Activity;
 import android.content.Context;
-import android.graphics.Color;
-import android.view.Gravity;
+import android.text.Html;
+import android.text.method.LinkMovementMethod;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import java.util.ArrayList;
 import java.util.List;
 
 
@@ -53,6 +51,9 @@ public class ChatAdapter extends BaseAdapter {
         TextView senderNameText = (TextView) view.findViewById(R.id.sender_name_text);
         TextView receiverNameText = (TextView) view.findViewById(R.id.receiver_name_text);
 
+        senderMessageText.setMovementMethod(LinkMovementMethod.getInstance());
+        receiverMessageText.setMovementMethod(LinkMovementMethod.getInstance());
+
         RelativeLayout layout = (RelativeLayout) view.findViewById(R.id.bubble_layout);
 
         // if message is mine then align to right
@@ -60,7 +61,7 @@ public class ChatAdapter extends BaseAdapter {
             senderNameText.setText(message.sender);
             receiverNameText.setText("");
 
-            senderMessageText.setText(message.body);
+            senderMessageText.setText(Html.fromHtml(message.body));
             senderMessageText.setVisibility(View.VISIBLE);
             receiverMessageText.setVisibility(View.INVISIBLE);
         }
@@ -69,7 +70,7 @@ public class ChatAdapter extends BaseAdapter {
             senderNameText.setText("");
             receiverNameText.setText(message.sender);
 
-            receiverMessageText.setText(message.body);
+            receiverMessageText.setText(Html.fromHtml(message.body));
             senderMessageText.setVisibility(View.INVISIBLE);
             receiverMessageText.setVisibility(View.VISIBLE);
         }

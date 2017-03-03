@@ -1,26 +1,32 @@
 package info.codesert.chatpp;
 
-import java.util.Random;
+import java.util.Date;
+import java.util.UUID;
 
 public class ChatMessage {
-    public String body, sender, receiver, senderName;
-    public String Date, Time;
-    public String msgid;
-    public boolean isMine;// Did I send the message.
+    UUID msgId;
+    String body, sender, receiver;
+    Date time;
+    boolean isMine;// Did I send the message.
 
-    public ChatMessage(String Sender, String Receiver, String messageString,
-                       String ID, boolean isMINE) {
-        body = messageString;
-        isMine = isMINE;
-        sender = Sender;
-        msgid = ID;
-        receiver = Receiver;
-        senderName = sender;
+    public ChatMessage(String sender, String receiver, String body, boolean isMine) {
+        msgId = UUID.randomUUID();
+        this.body = body;
+        this.sender = sender;
+        this.receiver = receiver;
+        this.isMine = isMine;
+        this.time = new Date();
     }
 
-    public void setMsgID() {
-
-        msgid += "-" + String.format("%02d", new Random().nextInt(100));
-        ;
+    @Override
+    public String toString() {
+        return "ChatMessage{" +
+                "msgId=" + msgId +
+                ", body='" + body + '\'' +
+                ", sender='" + sender + '\'' +
+                ", receiver='" + receiver + '\'' +
+                ", time=" + time +
+                ", isMine=" + isMine +
+                '}';
     }
 }

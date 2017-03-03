@@ -1,6 +1,5 @@
 package info.codesert.chatpp;
 
-import android.annotation.SuppressLint;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -18,35 +17,28 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.RequestFuture;
 import com.android.volley.toolbox.Volley;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
-import java.util.Random;
-import java.util.concurrent.ExecutionException;
 
 public class ChatActivity extends AppCompatActivity {
 
     private static final String TAG = "ChatActivity";
-    private static final String USER1 = "Simon";
+    private static final String USER1 = "User";
     private static final String USER2 = "PayPal";
     private static final String EMPTY_STRING = "";
     private static final String URL = "http://10.0.2.2:5000/v1/chatbotserv";
+    public static final int TIMEOUT_MS = 30000;
 
     private EditText mMessageEditText;
     private Button mSendMessageButton;
     private ListView mMessageListView;
     private List<ChatMessage> mChatMessages;
     private ChatAdapter mChatAdapter;
-    private Random random;
     private String title;
 
     @Override
@@ -55,10 +47,8 @@ public class ChatActivity extends AppCompatActivity {
         setContentView(R.layout.activity_chat);
         title = this.getTitle().toString();
 
-        random = new Random();
-
         mMessageEditText = (EditText) findViewById(R.id.message_edit_text);
-        mMessageEditText.getBackground().setColorFilter(getColor(R.color.ppBlue), PorterDuff.Mode.SRC_IN);
+        mMessageEditText.getBackground().setColorFilter(getResources().getColor(R.color.ppBlue), PorterDuff.Mode.SRC_IN);
         mMessageEditText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -107,12 +97,8 @@ public class ChatActivity extends AppCompatActivity {
     public void sendTextMessage() {
         String message = mMessageEditText.getEditableText().toString();
         if (!message.equalsIgnoreCase(EMPTY_STRING)) {
-            final ChatMessage chatMessage = new ChatMessage(USER1, USER2,
-                    message, EMPTY_STRING + random.nextInt(1000), true);
-            chatMessage.setMsgID();
-            chatMessage.body = message;
-            chatMessage.Date = getCurrentDate();
-            chatMessage.Time = getCurrentTime();
+            final ChatMessage chatMessage = new ChatMessage(USER1, USER2, message, true);
+            Log.d(TAG, chatMessage.toString());
             mMessageEditText.setText("");
             mChatAdapter.add(chatMessage);
             mChatAdapter.notifyDataSetChanged();
@@ -141,11 +127,12 @@ public class ChatActivity extends AppCompatActivity {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError volleyError) {
-
+                setTitle(title);
+                receiveTextMessage(getResources().getString(R.string.error_response));
             }
         });
         request.setRetryPolicy(new DefaultRetryPolicy(
-                        10000,
+                        TIMEOUT_MS,
                         DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
                         DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         Volley.newRequestQueue(this).add(request);
@@ -154,28 +141,10 @@ public class ChatActivity extends AppCompatActivity {
 
     public void receiveTextMessage(String text) {
         if (text != null && !text.equalsIgnoreCase(EMPTY_STRING)) {
-            final ChatMessage chatMessage = new ChatMessage(USER2, USER1,
-                    text, "" + random.nextInt(1000), false);
-            chatMessage.setMsgID();
-            chatMessage.body = text;
-            chatMessage.Date = getCurrentDate();
-            chatMessage.Time = getCurrentTime();
-            mMessageEditText.setText("");
+            final ChatMessage chatMessage = new ChatMessage(USER2, USER1, text, false);
+            Log.d(TAG, chatMessage.toString());
             mChatAdapter.add(chatMessage);
             mChatAdapter.notifyDataSetChanged();
         }
     }
-
-    private static String getCurrentTime() {
-        DateFormat timeFormat = new SimpleDateFormat("K:mma");
-        Date today = Calendar.getInstance().getTime();
-        return timeFormat.format(today);
-    }
-
-    public static String getCurrentDate() {
-        DateFormat dateFormat = new SimpleDateFormat("d MMM yyyy");
-        Date today = Calendar.getInstance().getTime();
-        return dateFormat.format(today);
-    }
-
 }
