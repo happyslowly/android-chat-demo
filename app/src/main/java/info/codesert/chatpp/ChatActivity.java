@@ -28,8 +28,8 @@ import java.util.List;
 public class ChatActivity extends AppCompatActivity {
 
     private static final String TAG = "ChatActivity";
-    private static final String USER1 = "User";
-    private static final String USER2 = "PayPal";
+    private static final String USER1 = "User1";
+    private static final String USER2 = "User2";
     private static final String EMPTY_STRING = "";
     private static final String URL = "http://10.0.2.2:5000/v1/chatbotserv";
     public static final int TIMEOUT_MS = 30000;
@@ -48,7 +48,7 @@ public class ChatActivity extends AppCompatActivity {
         title = this.getTitle().toString();
 
         mMessageEditText = (EditText) findViewById(R.id.message_edit_text);
-        mMessageEditText.getBackground().setColorFilter(getResources().getColor(R.color.ppBlue), PorterDuff.Mode.SRC_IN);
+        mMessageEditText.getBackground().setColorFilter(getResources().getColor(R.color.colorPrimary), PorterDuff.Mode.SRC_IN);
         mMessageEditText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
